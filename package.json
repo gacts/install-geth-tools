@@ -1,0 +1,44 @@
+{
+  "name": "install-geth-tools",
+  "description": "Installs Geth (Go Ethereum) and tools into your actions workflow",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint ./src",
+    "build": "ncc build src/index.js -o dist --source-map --minify --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gacts/install-geth-tools.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "Ethereum",
+    "abigen",
+    "bootnode",
+    "clef",
+    "evm",
+    "puppeth",
+    "rlpdump"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gacts/install-geth-tools/issues"
+  },
+  "homepage": "https://github.com/gacts/install-geth-tools#readme",
+  "dependencies": {
+    "@actions/cache": "^2.0.5",
+    "@actions/core": "^1.8.2",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.0.3",
+    "@actions/glob": "^0.3.0",
+    "@actions/io": "^1.1.2",
+    "@actions/tool-cache": "^2.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.16.0",
+    "jest": "^28.1.0"
+  }
+}

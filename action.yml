@@ -1,0 +1,20 @@
+name: Install Geth (Go Ethereum) and tools
+description: Installs Geth (Go Ethereum) and tools (abigen, bootnode, clef, evm, puppeth, rlpdump) into your actions workflow
+
+inputs:
+  version:
+    description: Geth version
+    required: true
+    default: latest
+  github-token:
+    description: GitHub auth token. Since there's a default, this is typically not supplied by the user
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: node16
+  main: dist/index.js
+
+branding:
+  icon: download
+  color: purple

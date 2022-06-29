@@ -96,8 +96,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-latest] #, macos-latest, windows-latest] # TODO uncomment
-        version: [1.10.15] #, latest] # TODO uncomment
+        runs-on: [ubuntu-latest, macos-latest, windows-latest]
+        version: [1.10.15, latest]
     steps:
       - uses: actions/checkout@v3
 

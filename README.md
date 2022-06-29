@@ -40,10 +40,10 @@ jobs:
 
 Following inputs can be used as `step.with` keys:
 
-| Name           |   Type   |        Default        | Required | Description                                                |
-|----------------|:--------:|:---------------------:|:--------:|------------------------------------------------------------|
-| `version`      | `string` |       `latest`        |    no    | Version to install                                         |
-| `github-token` | `string` | `${{ github.token }}` |    no    | GitHub token (for requesting the latest hurl version info) |
+| Name           |   Type   |        Default        | Required | Description                                                          |
+|----------------|:--------:|:---------------------:|:--------:|----------------------------------------------------------------------|
+| `version`      | `string` |       `latest`        |    no    | Version to install                                                   |
+| `github-token` | `string` | `${{ github.token }}` |    no    | GitHub token (for requesting the latest version info & release hash) |
 
 ## Releasing
 

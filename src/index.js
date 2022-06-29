@@ -4,6 +4,7 @@ const github = require('@actions/github') // docs: https://github.com/actions/to
 const io = require('@actions/io') // docs: https://github.com/actions/toolkit/tree/main/packages/io
 const cache = require('@actions/cache') // docs: https://github.com/actions/toolkit/tree/main/packages/cache
 const exec = require('@actions/exec') // docs: https://github.com/actions/toolkit/tree/main/packages/exec
+const glob = require('@actions/glob') // docs: https://github.com/actions/toolkit/tree/main/packages/glob
 const path = require('path')
 const os = require('os')
 
@@ -24,17 +25,13 @@ async function runAction() {
     version = input.version
   }
 
-  await getVersionCommitHash(version)
+  core.startGroup('💾 Install Geth')
+  await doInstall(version)
+  core.endGroup()
 
-  console.log(version)
-
-  // core.startGroup('💾 Install Geth')
-  // await doInstall(version)
-  // core.endGroup()
-  //
-  // core.startGroup('🧪 Installation check')
-  // await doCheck()
-  // core.endGroup()
+  core.startGroup('🧪 Installation check')
+  await doCheck()
+  core.endGroup()
 }
 
 /**
@@ -52,40 +49,47 @@ async function doInstall(version) {
 
   let restoredFromCache = undefined
 
-  // try {
-  //   restoredFromCache = await cache.restoreCache([pathToInstall], cacheKey)
-  // } catch (e) {
-  //   core.warning(e)
-  // }
-  //
-  // if (restoredFromCache !== undefined) { // cache HIT
-  //   core.info(`👌 Geth restored from cache`)
-  // } else { // cache MISS
-    const distUri = getGethURI(process.platform, process.arch, version)
-    const distPath = await tc.downloadTool(distUri)
+  try {
+    restoredFromCache = await cache.restoreCache([pathToInstall], cacheKey)
+  } catch (e) {
+    core.warning(e)
+  }
+
+  if (restoredFromCache !== undefined) { // cache HIT
+    core.info(`👌 Geth restored from cache`)
+  } else { // cache MISS
+    const versionCommitHash = await getVersionCommitHash(input.githubToken, version)
+    const distUri = getGethURI(process.platform, process.arch, version, versionCommitHash)
     const pathToUnpack = path.join(os.tmpdir(), `geth.tmp`)
+    const distPath = await tc.downloadTool(distUri)
 
     switch (true) {
       case distUri.endsWith('tar.gz'):
         await tc.extractTar(distPath, pathToUnpack)
-        await io.rmRF(distPath)
-        await io.mv(path.join(pathToUnpack, `geth-${version}`), pathToInstall)
         break
 
       case distUri.endsWith('zip'):
-        await tc.extractZip(distPath, pathToInstall)
+        await tc.extractZip(distPath, pathToUnpack)
         break
 
       default:
         throw new Error('Unsupported distributive format')
     }
 
-    // try {
-    //   await cache.saveCache([pathToInstall], cacheKey)
-    // } catch (e) {
-    //   core.warning(e)
-    // }
-  // }
+    await io.rmRF(distPath)
+
+    for await (const filePath of (await glob.create(path.join(pathToUnpack, '**', '*'), {
+      matchDirectories: false,
+    })).globGenerator()) {
+      await io.mv(filePath, path.join(pathToInstall, path.basename(filePath)))
+    }
+
+    try {
+      await cache.saveCache([pathToInstall], cacheKey)
+    } catch (e) {
+      core.warning(e)
+    }
+  }
 
   core.addPath(pathToInstall)
 }
@@ -96,17 +100,15 @@ async function doInstall(version) {
  * @throws
  */
 async function doCheck() {
-  const hurlBinPath = await io.which('hurl', true)
+  const gethBinPath = await io.which('geth', true)
 
-  if (hurlBinPath === "") {
-    throw new Error('hurl binary file not found in $PATH')
+  if (gethBinPath === "") {
+    throw new Error('geth binary file not found in $PATH')
   }
 
-  await exec.exec('hurl', ['--version'], {silent: true})
+  await exec.exec('geth', ['version'], {silent: true})
 
-  core.setOutput('hurl-bin', hurlBinPath)
-
-  core.info(`Hurl installed: ${hurlBinPath}`)
+  core.info(`Geth installed: ${gethBinPath}`)
 }
 
 /**
@@ -114,10 +116,8 @@ async function doCheck() {
  * @returns {Promise<string>}
  */
 async function getLatestGethVersion(githubAuthToken) {
-  const octokit = github.getOctokit(githubAuthToken)
-
   // docs: https://octokit.github.io/rest.js/v18#repos-get-latest-release
-  const latest = await octokit.rest.repos.getLatestRelease({
+  const latest = await github.getOctokit(githubAuthToken).rest.repos.getLatestRelease({
     owner: 'ethereum',
     repo: 'go-ethereum',
   })
@@ -131,14 +131,14 @@ async function getLatestGethVersion(githubAuthToken) {
  * @returns {Promise<string>}
  */
 async function getVersionCommitHash(githubAuthToken, version) {
-  const octokit = github.getOctokit(githubAuthToken)
-
-  const latest = await octokit.rest.repos.getLatestRelease({
+  // docs: https://octokit.github.io/rest.js/v18#git-get-ref
+  const ref = await github.getOctokit(githubAuthToken).rest.git.getRef({
     owner: 'ethereum',
     repo: 'go-ethereum',
+    ref: 'tags/v' + version,
   })
 
-  console.log(latest.data)
+  return ref.data.object.sha
 }
 
 /**
@@ -147,18 +147,27 @@ async function getVersionCommitHash(githubAuthToken, version) {
  *
  * @param {('linux'|'darwin'|'win32')} platform
  * @param {('x32'|'x64'|'arm'|'arm64')} arch
- * @param {string} version E.g.: `1.10.16`
+ * @param {string} version E.g.: `1.10.15`
+ * @param {string} versionCommitHash Eg.: `8be800ffa9c4992666e2620e0ab4725a1a83352b`
  *
  * @returns {string}
  *
  * @throws
  */
-function getGethURI(platform, arch, version) {
+function getGethURI(platform, arch, version, versionCommitHash) {
+  const shortHash = versionCommitHash.substring(0, 8)
+
   switch (platform) {
     case 'linux': {
       switch (arch) {
         case 'x64': // Amd64
-          return `https://github.com/Orange-OpenSource/hurl/releases/download/${version}/hurl-${version}-x86_64-linux.tar.gz`
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-${version}-${shortHash}.tar.gz`
+
+        case 'x32':
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-386-${version}-${shortHash}.tar.gz`
+
+        case 'arm64':
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-arm64-${version}-${shortHash}.tar.gz`
       }
 
       throw new Error('Unsupported linux architecture')
@@ -166,11 +175,8 @@ function getGethURI(platform, arch, version) {
 
     case 'darwin': {
       switch (arch) {
-        case 'arm64':
-          return `https://github.com/Orange-OpenSource/hurl/releases/download/${version}/hurl-${version}-arm64-osx.tar.gz`
-
         case 'x64':
-          return `https://github.com/Orange-OpenSource/hurl/releases/download/${version}/hurl-${version}-x86_64-osx.tar.gz`
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-${version}-${shortHash}.tar.gz`
       }
 
       throw new Error('Unsupported MacOS architecture')
@@ -179,7 +185,10 @@ function getGethURI(platform, arch, version) {
     case 'win32': {
       switch (arch) {
         case 'x64': // Amd64
-          return `https://github.com/Orange-OpenSource/hurl/releases/download/${version}/hurl-${version}-win64.zip`
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-amd64-${version}-${shortHash}.zip`
+
+        case 'x32': // 386
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-386-${version}-${shortHash}.zip`
       }
 
       throw new Error('Unsupported windows architecture')

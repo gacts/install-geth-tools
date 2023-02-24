@@ -8,7 +8,7 @@
 [![Build Status][badge_build]][link_build]
 [![License][badge_license]][link_license]
 
-This action installs [geth][geth] and tools (`abigen`, `bootnode`, `clef`, `evm`, `puppeth`, `rlpdump`) into your workflow. It can be run on **Linux** (`ubuntu-latest`), **macOS** (`macos-latest`), or **Windows** (`windows-latest`).
+This action installs [geth][geth] and tools (`abigen`, `bootnode`, `clef`, `evm`, `rlpdump`) into your workflow. It can be run on **Linux** (`ubuntu-latest`), **macOS** (`macos-latest`), or **Windows** (`windows-latest`).
 
 - 🚀 Geth downloads page: <https://geth.ethereum.org/downloads/>
 
@@ -30,7 +30,6 @@ jobs:
       - run: bootnode -h
       - run: clef --version
       - run: evm --version
-      - run: puppeth --version
       - run: rlpdump -h
 ```
 

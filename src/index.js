@@ -177,6 +177,9 @@ function getGethURI(platform, arch, version, versionCommitHash) {
       switch (arch) {
         case 'x64':
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-${version}-${shortHash}.tar.gz`
+
+        case 'arm64':
+          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-arm64-${version}-${shortHash}.tar.gz`;
       }
 
       throw new Error('Unsupported MacOS architecture')

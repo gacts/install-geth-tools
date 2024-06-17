@@ -170,7 +170,7 @@ function getGethURI(platform, arch, version, versionCommitHash) {
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-arm64-${version}-${shortHash}.tar.gz`
       }
 
-      throw new Error(`Unsupported linux architecture ${arch}`)
+      throw new Error(`Unsupported linux architecture '${arch}'.`)
     }
 
     case 'darwin': {
@@ -182,7 +182,7 @@ function getGethURI(platform, arch, version, versionCommitHash) {
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-arm64-${version}-${shortHash}.tar.gz`;
       }
 
-      throw new Error(`Unsupported MacOS architecture ${arch}`)
+      throw new Error(`Unsupported MacOS architecture '${arch}'.`)
     }
 
     case 'win32': {
@@ -194,7 +194,7 @@ function getGethURI(platform, arch, version, versionCommitHash) {
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-386-${version}-${shortHash}.zip`
       }
 
-      throw new Error(`Unsupported windows architecture ${arch}`)
+      throw new Error(`Unsupported windows architecture '${arch}'.`)
     }
   }
 

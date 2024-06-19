@@ -2,10 +2,9 @@
   "name": "install-geth-tools",
   "description": "Installs Geth (Go Ethereum) and tools into your actions workflow",
   "main": "src/index.js",
-  "type": "module",
   "scripts": {
     "lint": "eslint --config package.json ./src/**/*.js",
-    "build": "ncc build src/index.js -o dist --source-map --minify --no-cache"
+    "build": "ncc build src/index.js -o dist --minify --no-cache"
   },
   "repository": {
     "type": "git",
@@ -44,14 +43,9 @@
     "env": {
       "commonjs": true,
       "es6": true,
-      "jest": true,
       "node": true
     },
     "extends": "eslint:recommended",
-    "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
-    },
     "parserOptions": {
       "ecmaVersion": 2018
     },

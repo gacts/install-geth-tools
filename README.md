@@ -50,7 +50,7 @@ The following inputs can be used as `step.with` keys:
 To release a new version:
 
 - Build the action distribution (`make build` or `npm run build`).
-- Commit and push changes (including `dist` directory changes - this is important) to the `master` branch.
+- Commit and push changes (including `dist` directory changes - this is important) to the `master|main` branch.
 - Publish the new release using the repo releases page (the git tag should follow the `vX.Y.Z` format).
 
 Major and minor git tags (`v1` and `v1.2` if you publish a `v1.2.Z` release) will be updated automatically.

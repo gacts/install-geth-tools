@@ -166,19 +166,20 @@ async function getVersionCommitHash(githubAuthToken, version) {
  * @throws {Error} Unsupported platform or architecture
  */
 function getDistUrl(platform, arch, version, versionCommitHash) {
+  const baseUrl = 'https://gethstore.blob.core.windows.net/builds'
   const shortHash = versionCommitHash.substring(0, 8)
 
   switch (platform) {
     case 'linux': {
       switch (arch) {
         case 'x64': // Amd64
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-${version}-${shortHash}.tar.gz`
+          return `${baseUrl}/geth-alltools-linux-amd64-${version}-${shortHash}.tar.gz`
 
         case 'x32':
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-386-${version}-${shortHash}.tar.gz`
+          return `${baseUrl}/geth-alltools-linux-386-${version}-${shortHash}.tar.gz`
 
         case 'arm64':
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-arm64-${version}-${shortHash}.tar.gz`
+          return `${baseUrl}/geth-alltools-linux-arm64-${version}-${shortHash}.tar.gz`
       }
 
       throw new Error(`Unsupported linux architecture (${arch})`)
@@ -187,10 +188,10 @@ function getDistUrl(platform, arch, version, versionCommitHash) {
     case 'darwin': {
       switch (arch) {
         case 'x64':
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-${version}-${shortHash}.tar.gz`
+          return `${baseUrl}/geth-alltools-darwin-amd64-${version}-${shortHash}.tar.gz`
 
         case 'arm64': // available since 1.13.5 // https://github.com/gacts/install-geth-tools/pull/68 TY @antazoey
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-arm64-${version}-${shortHash}.tar.gz`;
+          return `${baseUrl}/geth-alltools-darwin-arm64-${version}-${shortHash}.tar.gz`;
       }
 
       throw new Error(`Unsupported MacOS architecture (${arch})`)
@@ -199,10 +200,10 @@ function getDistUrl(platform, arch, version, versionCommitHash) {
     case 'win32': {
       switch (arch) {
         case 'x64': // Amd64
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-amd64-${version}-${shortHash}.zip`
+          return `${baseUrl}/geth-alltools-windows-amd64-${version}-${shortHash}.zip`
 
         case 'x32': // 386
-          return `https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-386-${version}-${shortHash}.zip`
+          return `${baseUrl}/geth-alltools-windows-386-${version}-${shortHash}.zip`
       }
 
       throw new Error(`Unsupported windows architecture (${arch})`)

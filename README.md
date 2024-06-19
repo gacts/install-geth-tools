@@ -2,24 +2,25 @@
   <img src="https://user-images.githubusercontent.com/7326800/176276668-106932ec-bde4-4a91-8390-c826bb9d5075.png" alt="Logo" width="90" />
 </p>
 
-# Install [Geth][geth] action
+# Install [Geth][geth] Action
 
 ![Release version][badge_release_version]
 [![Build Status][badge_build]][link_build]
 [![License][badge_license]][link_license]
 
-This action installs [geth][geth] and tools (`abigen`, `bootnode`, `clef`, `evm`, `rlpdump`) into your workflow. It can be run on **Linux** (`ubuntu-latest`), **macOS** (`macos-latest`), or **Windows** (`windows-latest`).
+This action installs [Geth][geth] and its tools (`abigen`, `bootnode`, `clef`, `evm`, `rlpdump`) into your workflow. It
+can be run on **Linux** (`ubuntu-latest`), **macOS** (`macos-latest`), or **Windows** (`windows-latest`).
 
 - 🚀 Geth downloads page: <https://geth.ethereum.org/downloads/>
 
-Additionally, this action uses GitHub **caching mechanism** to speed up your workflow execution time!
+Additionally, this action uses the GitHub **caching mechanism** to speed up your workflow execution time!
 
 ## Usage
 
 ```yaml
 jobs:
   install-geth-tools:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest # or macos-latest, windows-latest
     steps:
       - uses: gacts/install-geth-tools@v1
         #with:
@@ -37,7 +38,7 @@ jobs:
 
 ### Inputs
 
-Following inputs can be used as `step.with` keys:
+The following inputs can be used as `step.with` keys:
 
 | Name           |   Type   |        Default        | Required | Description                                                          |
 |----------------|:--------:|:---------------------:|:--------:|----------------------------------------------------------------------|
@@ -46,25 +47,24 @@ Following inputs can be used as `step.with` keys:
 
 ## Releasing
 
-New versions releasing scenario:
+To release a new version:
 
-- Make required changes in the [changelog](CHANGELOG.md) file
-- Build the action distribution (`make build` or `npm run build`)
-- Commit and push changes (including `dist` directory changes - this is important) into the `master` branch
-- Publish new release using repo releases page (git tag should follow `vX.Y.Z` format)
+- Build the action distribution (`make build` or `npm run build`).
+- Commit and push changes (including `dist` directory changes - this is important) to the `master` branch.
+- Publish the new release using the repo releases page (the git tag should follow the `vX.Y.Z` format).
 
-Major and minor git tags (`v1` and `v1.2` if you publish `v1.2.Z` release) will be updated automatically.
+Major and minor git tags (`v1` and `v1.2` if you publish a `v1.2.Z` release) will be updated automatically.
 
 ## Support
 
 [![Issues][badge_issues]][link_issues]
-[![Issues][badge_pulls]][link_pulls]
+[![Pull Requests][badge_pulls]][link_pulls]
 
-If you find any action errors, please, [make an issue][link_create_issue] in the current repository.
+If you find any errors in the action, please [create an issue][link_create_issue] in this repository.
 
 ## License
 
-This is open-sourced software licensed under the [MIT License][link_license].
+This is open-source software licensed under the [MIT License][link_license].
 
 [badge_build]:https://img.shields.io/github/actions/workflow/status/gacts/install-geth-tools/tests.yml?branch=master&maxAge=30
 [badge_release_version]:https://img.shields.io/github/release/gacts/install-geth-tools.svg?maxAge=30

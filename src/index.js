@@ -189,7 +189,7 @@ function getDistUrl(platform, arch, version, versionCommitHash) {
         case 'x64':
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-${version}-${shortHash}.tar.gz`
 
-        case 'arm64': // https://github.com/gacts/install-geth-tools/pull/68 TY @antazoey
+        case 'arm64': // available since 1.13.5 // https://github.com/gacts/install-geth-tools/pull/68 TY @antazoey
           return `https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-arm64-${version}-${shortHash}.tar.gz`;
       }
 

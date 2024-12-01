@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/gacts/install-geth-tools#readme",
   "dependencies": {
-    "@actions/cache": "^3.2.4",
+    "@actions/cache": "^3.3.0",
     "@actions/core": "^1.11.1",
     "@actions/exec": "^1.1.1",
     "@actions/github": "^6.0.0",

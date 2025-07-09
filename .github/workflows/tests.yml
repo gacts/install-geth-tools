@@ -79,7 +79,6 @@ jobs:
         with: {version: '${{ matrix.version }}'}
       - run: geth version
       - run: abigen --version
-      - run: bootnode -h
       - run: clef --version
       - run: evm --version
       - run: rlpdump -h

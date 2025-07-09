@@ -2,7 +2,7 @@
 # docs: https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
 
 name: Install Geth (Go Ethereum) and tools
-description: Installs Geth (Go Ethereum) and tools (abigen, bootnode, clef, evm, rlpdump) into your actions workflow
+description: Installs Geth (Go Ethereum) and tools (abigen, clef, evm, rlpdump) into your actions workflow
 
 inputs:
   version:

@@ -71,7 +71,10 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [ubuntu-latest, macos-latest, windows-latest]
-        version: [1.13.5, 1.14.5, latest]
+        version: [1.13.5, 1.14.5] # seems like the latest version is not available for macOS
+        include:
+          - {runs-on: ubuntu-latest, version: latest}
+          - {runs-on: windows-latest, version: latest}
     steps:
       - uses: actions/checkout@v4
       - name: Run this action

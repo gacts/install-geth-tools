@@ -8,7 +8,7 @@
 [![Build Status][badge_build]][link_build]
 [![License][badge_license]][link_license]
 
-This action installs [Geth][geth] and its tools (`abigen`, `bootnode`, `clef`, `evm`, `rlpdump`) into your workflow. It
+This action installs [Geth][geth] and its tools (`abigen`, `clef`, `evm`, `rlpdump`) into your workflow. It
 can be run on **Linux** (`ubuntu-latest`), **macOS** (`macos-latest`), or **Windows** (`windows-latest`).
 
 - 🚀 Geth downloads page: <https://geth.ethereum.org/downloads/>
@@ -24,11 +24,10 @@ jobs:
     steps:
       - uses: gacts/install-geth-tools@v1
         #with:
-        #  version: 1.10.19 # `latest` by default, but you can set a specific version to install, e.g.: `1.10.19`
+        #  version: 1.16.1 # `latest` by default, but you can set a specific version to install
 
       - run: geth version
       - run: abigen --version
-      - run: bootnode -h
       - run: clef --version
       - run: evm --version
       - run: rlpdump -h
